@@ -5,46 +5,48 @@ import { useParams,useNavigate } from 'react-router-dom';
 
 
 const Editcategorie = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams();
-  const[categorie,setCategorie]=useState({})
-  const loadcategorie=async()=>{
-    axios.get(`https://backendecomgs1.vercel.app/api/api/categories/${id}`)
-    .then((response)=>{setCategorie(response.data)})
-   .catch ((error)=> {
-    console.log(error);
-  })
-}
+  const [categorie, setCategorie] = useState({});
+  const [isLoading, setIsLoading] = useState(true); // Add a state to track loading
+
+  const loadcategorie = async () => {
+    setIsLoading(true); // Set loading to true before fetching data
+    try {
+      const response = await axios.get(`https://backendecomgs1.vercel.app/api/api/categories/${id}`);
+      setCategorie(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false); // Set loading to false after fetching data
+    }
+  };
 
   useEffect(() => {
-    
-    loadcategorie() 
-     
-  }, [])
-  const handleSubmit = async(event) => {
-    event.preventDefault();
-   //faire le put dans la BD
-axios.put(`https://backendecomgs1.vercel.app/api/api/categories/${id}`,categorie)
-.then(res => {  
-console.log(res);
-navigate("/categories")
-  })   
-.catch(error=>{
-    console.log(error)
-    alert("Erreur ! Modification non effectuée")
-    })
+    loadcategorie();
+  }, []);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    //faire le put dans la BD
+    axios.put(`https://backendecomgs1.vercel.app/api/api/categories/${id}`, categorie)
+      .then((res) => {
+        console.log(res);
+        navigate("/categories");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Erreur ! Modification non effectuée");
+      });
   };
 
   return (
     <div className="form-container">
-     
-   
-      <form  className="categorie-form">
-  
- <h2>Modifier  Catégorie</h2>
-
-        
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <form className="categorie-form">
+          <h2>Modifier Catégorie</h2>
           <div className="form-group">
             <label htmlFor="Nom">Nom catégorie</label>
             <input
@@ -84,9 +86,9 @@ navigate("/categories")
         
       </form>
 
+      )}
     </div>
+  );
+};
 
-  )
-}
-
-export default Editcategorie
+export default Editcategorie;

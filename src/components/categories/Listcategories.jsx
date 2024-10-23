@@ -10,24 +10,34 @@ const Listcategories = () => {
 
     
   const getcategories=async()=>{
+    /*
    await axios.get("https://backendecomgs1.vercel.app/api/api/categories")
     .then(res=>{
       setCategories(res.data)
-    }
-  )
+       )
   .catch(error=>{
     console.log(error)
   })
   . finally (()=>
     setIsLoading(false)
-)
+  )
+    }
+      */
+    fetch('https://backendecomgs1.vercel.app/api/api/categories')
+    .then(response => response.json())
+    .then(data =>   setCategories(data))
+    .catch(error => console.error(error))
+    . finally (()=>
+      setIsLoading(false)
+    )
+ 
 }
 
 useEffect(() => {
     getcategories()
      },[])
 
-if (isLoading) {
+if (isLoading) { 
       return <div>Loading Data please wait...</div>; // Message de chargement
     }
     
